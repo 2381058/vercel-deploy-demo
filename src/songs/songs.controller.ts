@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseInterceptors, ValidationPipe } from '@nestjs/common';
 import { SongsService } from './songs.service';
 import { CreateSongDTO } from './create-song.dto';
+import { ExecutionTime } from 'src/ExecutionTime.interceptor';
 @Controller('songs')
 export class SongsController {
 
@@ -9,11 +10,12 @@ export class SongsController {
     }
 
     @Post()
-    create(@Body() createSongDTO : CreateSongDTO){
+    @UseInterceptors(ExecutionTime)
+    create(@Body(new ValidationPipe()) createSongDTO : CreateSongDTO){
         return this.songService.create(createSongDTO);
     }
 
-    @Post()
+    @Get()
     findAll(){
         return this.songService.findAll();
     }
